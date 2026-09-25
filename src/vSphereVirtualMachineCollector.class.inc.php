@@ -1,6 +1,8 @@
 <?php
 require_once(APPROOT.'collectors/src/vSphereCollector.class.inc.php');
 
+use \Vmwarephp\Extensions\VirtualMachine;
+
 class vSphereVirtualMachineCollector extends vSphereCollector
 {
 	protected $idx;
@@ -82,7 +84,7 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 				}
 			}
 
-			$aVirtualMachines = $vhost->findAllManagedObjects('VirtualMachine', array('config', 'runtime', 'guest', 'network', 'storage'));
+			$aVirtualMachines = $vhost->findAllManagedObjects('VirtualMachine', array('config', 'runtime', 'guest', 'network', 'storage', 'customValue'));
 
 			$idx = 1;
 			foreach ($aVirtualMachines as $oVirtualMachine) {
@@ -307,6 +309,10 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 			'description' => $sAnnotation,
 		);
 
+		foreach (static::GetCustomFields(__CLASS__) as $sAttCode => $sFieldDefinition) {
+			$aData[$sAttCode] = static::GetCustomFieldValue($oVirtualMachine, $sFieldDefinition) ?? $aData[$sAttCode] ?? '';
+		}
+
 		$oCollectionPlan = vSphereCollectionPlan::GetPlan();
 		if ($oCollectionPlan->IsCbdVMwareDMInstalled()) {
 			utils::Log(LOG_DEBUG, "Reading uuid...");
@@ -358,6 +364,30 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 
 		return $aData;
 
+	}
+
+	/**
+	 * Load custom values for virtual machine
+	 * @param VirtualMachine $oVirtualMachine
+	 * @param string $sFieldDefinition
+	 * @return ?string
+	 */
+	protected static function GetCustomFieldValue(VirtualMachine $oVirtualMachine, string $sFieldDefinition)
+	{
+		$value = null;
+		$aMatches = [];
+		if (preg_match('/^customValue\[(.+)\]$/', $sFieldDefinition, $aMatches)) {
+			// Special case for CustomFieldValue object
+			foreach ($oVirtualMachine->customValue as $oValue) {
+				if (isset($oValue) && $oValue->key == $aMatches[1]) {
+					return $oValue->value;
+				}
+			}
+		} else {
+			eval('$value = $oVirtualMachine->'.$sFieldDefinition.' ?: null;');
+		}
+
+		return $value;
 	}
 
 	static protected function DoCollectVMIPs($aMACToNetwork, $oVirtualMachine)
@@ -544,6 +574,10 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 			$aData['managementip_id'] = $aVM['managementip_id'];
 		} else {
 			$aData['managementip'] = $aVM['managementip'];
+		}
+
+		foreach (array_keys(static::GetCustomFields(__CLASS__)) as $sAttribute) {
+			$aData[$sAttribute] = $aVM[$sAttribute];
 		}
 
 		return $aData;
