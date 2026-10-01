@@ -2,7 +2,7 @@
 
 > [!NOTE]
 > This is a fork of [Combodo/itop-data-collector-vsphere](https://github.com/Combodo/itop-data-collector-vsphere),
-> maintained by [Super-Visions](https://github.com/Super-Visions).
+> maintained by [Super-Visions](https://github.com/Super-Visions) and endorsed by [teemIP](https://github.com/teemIP).
 > See [CHANGELOG.md](CHANGELOG.md) for what has changed relative to upstream.
 
 This stand-alone PHP application connects to a vSphere server and collects information about an entire
