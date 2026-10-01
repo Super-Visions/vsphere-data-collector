@@ -17,6 +17,7 @@ Additional features introduced in this fork are described further in this docume
 
 - Improved compatibility with the absence of the [Datacenter Management] and [Advanced Storage Management]
   modules, as well as the [Network Management Extended] extension.
+- Improved VirtualMachine collection.
 
 [Datacenter Management]: https://www.itophub.io/wiki/page?id=latest:datamodel:itop-datacenter-mgmt
 [Advanced Storage Management]: https://www.itophub.io/wiki/page?id=latest:datamodel:itop-storage-mgmt
