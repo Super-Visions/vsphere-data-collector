@@ -15,15 +15,19 @@ Additional features introduced in this fork are described further in this docume
 
 ## Features
 
-- Improved compatibility with the absence of Datacenter Management, Advanced Storage Management and
-Network Management Extended modules.
+- Improved compatibility with the absence of the [Datacenter Management] and [Advanced Storage Management]
+  modules, as well as the [Network Management Extended] extension.
+
+[Datacenter Management]: https://www.itophub.io/wiki/page?id=latest:datamodel:itop-datacenter-mgmt
+[Advanced Storage Management]: https://www.itophub.io/wiki/page?id=latest:datamodel:itop-storage-mgmt
+[Network Management Extended]: https://wiki.teemip.net/doku.php?id=extensions:teemip-network-mgmt-extended
 
 ## Installation
 
 Create an empty configuration file at `conf/params.local.xml` and adapt the settings to connect to your iTop
 instance and vSphere environment. To get the default configuration, run the following command:
 
-```
+```shell
 php exec.php --dump_config_only
 ```
 
@@ -34,7 +38,7 @@ You can find information about the several configuration items in the files `con
 
 The first time the collector is run, the following command is recommended:
 
-```
+```shell
 php exec.php --configure_only
 ```
 
@@ -42,7 +46,7 @@ This will create the Synchronization Data Sources if they don't already exist.
 
 To collect the data without synchronizing with iTop, run:
 
-```
+```shell
 php exec.php --collect_only
 ```
 
@@ -52,14 +56,14 @@ however, note that collection should be run again after such changes.
 
 Finally, to perform iTop synchronization with the data collected:
 
-```
+```shell
 php exec.php --synchro_only
 ```
 
 Data collection and synchronization (and data source update/creation if necessary) can be performed in a single
 step if desired:
 
-```
+```shell
 php exec.php
 ```
 
