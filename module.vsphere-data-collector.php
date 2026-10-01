@@ -16,11 +16,11 @@
 
 SetupWebPage::AddModule(
 	__FILE__, // Path to the current file, all other file names are relative to the directory containing this file
-	'itop-data-collector-vsphere/1.4.1-dev',
+	'vsphere-data-collector/1.0.0',
 	array(
 		// Identification
 		//
-		'label' => 'vSphere Inventory Data Collector',
+		'label' => 'vSphere Data Collector',
 		'category' => 'collector',
 
 		// Setup

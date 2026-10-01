@@ -8,6 +8,8 @@ Git tags for this project use the `sv-v` prefix (e.g. `sv-v1.0.0`) to avoid coll
 
 ## [Unreleased]
 
+## [1.0.0]
+
 ### Added
 
 - **Upstream:** Collect status of Datastores
@@ -28,6 +30,7 @@ Git tags for this project use the `sv-v` prefix (e.g. `sv-v1.0.0`) to avoid coll
 - **Upstream:** Attribute `logicalvolumes_list` is actually not sync'ed on Hypervisors and VMs
 - **Upstream:** Compatibility with PHP 8.4
 
-[Unreleased]: https://github.com/Super-Visions/vsphere-data-collector/compare/1.4.0...HEAD
+[Unreleased]: https://github.com/Super-Visions/vsphere-data-collector/compare/sv-v1.0.0...HEAD
+[1.0.0]: https://github.com/Super-Visions/vsphere-data-collector/releases/tag/sv-v1.0.0
 [upstream-1.4.0]: https://github.com/Combodo/itop-data-collector-vsphere/releases/tag/1.4.0
 [base-1.5.1]: https://github.com/Combodo/itop-data-collector-base/releases/tag/1.5.1
