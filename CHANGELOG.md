@@ -13,6 +13,7 @@ Git tags for this project use the `sv-v` prefix (e.g. `sv-v1.0.0`) to avoid coll
 - **Upstream:** Collect status of Datastores
 - **Upstream:** Improve module installation checks by using integrated methods
 - Custom VM value collection
+- Detailed OS version parsing
 
 ### Changed
 
