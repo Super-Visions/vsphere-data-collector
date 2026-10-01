@@ -1,6 +1,8 @@
 <?php
 require_once(APPROOT.'collectors/src/vSphereCollector.class.inc.php');
 
+use \Vmwarephp\Extensions\VirtualMachine;
+
 class vSphereVirtualMachineCollector extends vSphereCollector
 {
 	protected $idx;
@@ -30,34 +32,11 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 	{
 		if ($sAttCode == 'services_list') return true;
 		if ($sAttCode == 'providercontracts_list') return true;
-
-        if ($this->oCollectionPlan->IsAdvanceStorageMgmtInstalled()) {
-            if ($sAttCode == 'logicalvolumes_list') return false;
-        } else {
-            if ($sAttCode == 'logicalvolumes_list') return true;
-        }
-
-		if ($this->oCollectionPlan->IsCbdVMwareDMInstalled()) {
-			if ($sAttCode == 'uuid') return false;
-			if ($sAttCode == 'power_state') {
-				if (!version_compare($this->oCollectionPlan->GetCbdVMwareDMVersion(), '1.0.0', '>' )) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		} else {
-			if ($sAttCode == 'uuid') return true;
-			if ($sAttCode == 'power_state') return true;
-		}
-
-		if ($this->oCollectionPlan->IsTeemIpInstalled()) {
-			if ($sAttCode == 'managementip') return true;
-			if ($sAttCode == 'managementip_id') return false;
-		} else {
-			if ($sAttCode == 'managementip') return false;
-			if ($sAttCode == 'managementip_id') return true;
-		}
+		if ($sAttCode == 'logicalvolumes_list') return $this->oCollectionPlan->IsAdvanceStorageMgmtInstalled();
+		if ($sAttCode == 'uuid') return !$this->oCollectionPlan->IsCbdVMwareDMInstalled();
+		if ($sAttCode == 'power_state') return !Utils::CheckModuleInstallation('combodo-vsphere-datamodel/1.1.0');
+		if ($sAttCode == 'managementip') return $this->oCollectionPlan->IsTeemIpInstalled();
+		if ($sAttCode == 'managementip_id') return !$this->oCollectionPlan->IsTeemIpInstalled();
 
 		return parent::AttributeIsOptional($sAttCode);
 	}
@@ -105,7 +84,7 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 				}
 			}
 
-			$aVirtualMachines = $vhost->findAllManagedObjects('VirtualMachine', array('config', 'runtime', 'guest', 'network', 'storage'));
+			$aVirtualMachines = $vhost->findAllManagedObjects('VirtualMachine', array('config', 'runtime', 'guest', 'network', 'storage', 'customValue'));
 
 			$idx = 1;
 			foreach ($aVirtualMachines as $oVirtualMachine) {
@@ -330,6 +309,10 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 			'description' => $sAnnotation,
 		);
 
+		foreach (static::GetCustomFields(__CLASS__) as $sAttCode => $sFieldDefinition) {
+			$aData[$sAttCode] = static::GetCustomFieldValue($oVirtualMachine, $sFieldDefinition) ?? $aData[$sAttCode] ?? '';
+		}
+
 		$oCollectionPlan = vSphereCollectionPlan::GetPlan();
 		if ($oCollectionPlan->IsCbdVMwareDMInstalled()) {
 			utils::Log(LOG_DEBUG, "Reading uuid...");
@@ -381,6 +364,30 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 
 		return $aData;
 
+	}
+
+	/**
+	 * Load custom values for virtual machine
+	 * @param VirtualMachine $oVirtualMachine
+	 * @param string $sFieldDefinition
+	 * @return ?string
+	 */
+	protected static function GetCustomFieldValue(VirtualMachine $oVirtualMachine, string $sFieldDefinition)
+	{
+		$value = null;
+		$aMatches = [];
+		if (preg_match('/^customValue\[(.+)\]$/', $sFieldDefinition, $aMatches)) {
+			// Special case for CustomFieldValue object
+			foreach ($oVirtualMachine->customValue as $oValue) {
+				if (isset($oValue) && $oValue->key == $aMatches[1]) {
+					return $oValue->value;
+				}
+			}
+		} else {
+			eval('$value = $oVirtualMachine->'.$sFieldDefinition.' ?: null;');
+		}
+
+		return $value;
 	}
 
 	static protected function DoCollectVMIPs($aMACToNetwork, $oVirtualMachine)
@@ -578,6 +585,10 @@ class vSphereVirtualMachineCollector extends vSphereCollector
 			$aData['managementip_id'] = $aVM['managementip_id'];
 		} else {
 			$aData['managementip'] = $aVM['managementip'];
+		}
+
+		foreach (array_keys(static::GetCustomFields(__CLASS__)) as $sAttribute) {
+			$aData[$sAttribute] = $aVM[$sAttribute];
 		}
 
 		return $aData;
