@@ -19,8 +19,8 @@ Git tags for this project use the `sv-v` prefix (e.g. `sv-v1.0.0`) to avoid coll
 
 ### Changed
 
-- Incorporated [upstream 1.4.0][upstream-1.4.0]
-- Uses [collector base 1.5.1][base-1.5.1]
+- Incorporated [upstream 1.4.0](https://github.com/Combodo/itop-data-collector-vsphere/releases/tag/1.4.0)
+- Uses [collector base 1.5.1](https://github.com/Combodo/itop-data-collector-base/releases/tag/1.5.1)
 
 ### Fixed
 
@@ -32,5 +32,3 @@ Git tags for this project use the `sv-v` prefix (e.g. `sv-v1.0.0`) to avoid coll
 
 [Unreleased]: https://github.com/Super-Visions/vsphere-data-collector/compare/sv-v1.0.0...HEAD
 [1.0.0]: https://github.com/Super-Visions/vsphere-data-collector/releases/tag/sv-v1.0.0
-[upstream-1.4.0]: https://github.com/Combodo/itop-data-collector-vsphere/releases/tag/1.4.0
-[base-1.5.1]: https://github.com/Combodo/itop-data-collector-base/releases/tag/1.5.1
