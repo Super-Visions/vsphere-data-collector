@@ -71,4 +71,4 @@ php exec.php
 While this is simpler, it affords less control over the synchronization process.
 
 More information on running collectors may be found on the
-[itop-data-collector-base](https://www.itophub.io/wiki/page?id=extensions%3Aitop-data-collector-base) page.
+[itop-data-collector-base](https://www.itophub.io/wiki/page?id=extensions:itop-data-collector-base) page.
