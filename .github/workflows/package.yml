@@ -51,9 +51,9 @@ jobs:
           artifacts: ${{ github.repository }}-${{ env.VERSION }}.zip
           artifactErrorsFailBuild: true
           draft: true
+          prerelease: ${{ contains(env.VERSION, '-') }}
           generateReleaseNotes: true
           name: ${{ env.VERSION }}
           omitBodyDuringUpdate: true
-          omitPrereleaseDuringUpdate: true
           updateOnlyUnreleased: true
           token: ${{ secrets.ACCESS_TOKEN }}
