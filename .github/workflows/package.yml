@@ -1,0 +1,59 @@
+name: Collector packaging
+
+on:
+  push:
+    tags:
+      - 'sv-v*'
+
+jobs:
+  release:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    permissions:
+          contents: write
+    env:
+          VERSION: ${{ github.ref_name }}
+    steps:
+      - name: Strip tag prefix
+        run: echo "VERSION=${VERSION#sv-v}" >> "$GITHUB_ENV"
+
+      - name: Checkout collector-base
+        uses: actions/checkout@v7
+        with:
+          repository: Combodo/itop-data-collector-base
+          ref: 1.5.1
+          sparse-checkout: |
+            conf
+            core
+            data
+            exec.php
+            toolkit
+          sparse-checkout-cone-mode: false
+          path: ${{ github.repository }}
+
+      - name: Checkout current collector
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.repository }}/collectors
+
+      - name: Create package
+        uses: thedoctor0/zip-release@0.7.6
+        with:
+          filename: ../${{ github.repository }}-${{ env.VERSION }}.zip
+          path: '*'
+          directory: ${{ github.repository_owner }}
+          exclusions: '*.git*'
+
+      - name: Create draft release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: ${{ github.repository }}-${{ env.VERSION }}.zip
+          artifactErrorsFailBuild: true
+          draft: true
+          prerelease: ${{ contains(env.VERSION, '-') }}
+          generateReleaseNotes: true
+          name: ${{ env.VERSION }}
+          omitBodyDuringUpdate: true
+          updateOnlyUnreleased: true
+          token: ${{ secrets.ACCESS_TOKEN }}
