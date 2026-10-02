@@ -29,6 +29,7 @@ Git tags for this project use the `sv-v` prefix (e.g. `sv-v1.0.0`) to avoid coll
 - **Upstream:** Compatibility with absence of Network Management Extended
 - **Upstream:** Attribute `logicalvolumes_list` is actually not sync'ed on Hypervisors and VMs
 - **Upstream:** Compatibility with PHP 8.4
+- Removed datastores and interfaces are now properly obsoleted/deactivated instead of being ignored
 
 [Unreleased]: https://github.com/Super-Visions/vsphere-data-collector/compare/sv-v1.0.0...HEAD
 [1.0.0]: https://github.com/Super-Visions/vsphere-data-collector/releases/tag/sv-v1.0.0
