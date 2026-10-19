@@ -8,7 +8,7 @@ Git tags for this project use the `sv-v` prefix (e.g. `sv-v1.0.0`) to avoid coll
 
 ## [Unreleased]
 
-## [1.0.0]
+## [1.0.0] - 2026-10-19
 
 ### Added
 
